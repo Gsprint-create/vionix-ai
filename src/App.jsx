@@ -1,30 +1,34 @@
-// src/App.jsx
 import { Routes, Route, Navigate } from "react-router-dom";
 import Layout from "./components/Layout";
 
-// Pages
 import Tools from "./pages/Tools";
 import Genix from "./pages/tools/Genix";
 import MorphAI from "./pages/tools/MorphAI";
 import Influencer from "./pages/tools/Influencer";
 
+// ✅ Studio
+import StudioLayout from "./studio/StudioLayout";
+import GenixStudio from "./studio/GenixStudio";
+import FaceSwapStudio from "./studio/FaceSwapStudio";
+
 export default function App() {
   return (
     <Routes>
-      {/* Layout wrapper */}
       <Route element={<Layout />}>
-        {/* Default */}
         <Route path="/" element={<Navigate to="/tools" replace />} />
 
-        {/* Directory */}
         <Route path="/tools" element={<Tools />} />
-
-        {/* Tool landing pages */}
         <Route path="/tools/genix" element={<Genix />} />
         <Route path="/tools/morphai-faceswap" element={<MorphAI />} />
         <Route path="/tools/influencer" element={<Influencer />} />
 
-        {/* Fallback */}
+        {/* ✅ Studio */}
+        <Route path="/studio" element={<StudioLayout />}>
+          <Route index element={<Navigate to="/studio/genix" replace />} />
+          <Route path="genix" element={<GenixStudio />} />
+          <Route path="faceswap" element={<FaceSwapStudio />} />
+        </Route>
+
         <Route path="*" element={<Navigate to="/tools" replace />} />
       </Route>
     </Routes>

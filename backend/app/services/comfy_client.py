@@ -1,70 +1,50 @@
-import os
 import time
-import json
 import requests
-from typing import Dict, Any, Optional
 
-def submit_prompt(comfy_url: str, workflow: Dict[str, Any]) -> str:
-    r = requests.post(f"{comfy_url}/prompt", json={"prompt": workflow}, timeout=60)
-    r.raise_for_status()
-    data = r.json()
-    return data["prompt_id"]
-
-def get_history(comfy_url: str, prompt_id: str) -> Dict[str, Any]:
-    r = requests.get(f"{comfy_url}/history/{prompt_id}", timeout=60)
+def _post(url, json=None, timeout=60):
+    r = requests.post(url, json=json, timeout=timeout)
     r.raise_for_status()
     return r.json()
 
-def wait_for_completion(
-    comfy_url: str,
-    prompt_id: str,
-    set_progress,
-    poll_interval: float = 0.6,
-    timeout_s: float = 120.0,
-) -> Dict[str, Any]:
-    start = time.time()
-    pct = 5
-    set_progress(pct)
-
-    while True:
-        if time.time() - start > timeout_s:
-            raise TimeoutError("comfy_timeout")
-
-        hist = get_history(comfy_url, prompt_id)
-
-        # When finished, history has an entry for prompt_id
-        item = hist.get(prompt_id)
-        if item:
-            set_progress(95)
-            return item
-
-        pct = min(90, pct + 3)
-        set_progress(pct)
-        time.sleep(poll_interval)
-
-def extract_first_image_from_history_item(history_item: Dict[str, Any]) -> Optional[Dict[str, str]]:
-    """
-    Returns {filename, subfolder, type} from Comfy history, or None.
-    """
-    outputs = history_item.get("outputs", {})
-    for node_id, out in outputs.items():
-        imgs = out.get("images")
-        if imgs and isinstance(imgs, list) and len(imgs) > 0:
-            img = imgs[0]
-            return {
-                "filename": img.get("filename", ""),
-                "subfolder": img.get("subfolder", ""),
-                "type": img.get("type", "output"),
-            }
-    return None
-
-def download_image(comfy_url: str, image_meta: Dict[str, str], save_path: str) -> None:
-    params = {
-        "filename": image_meta["filename"],
-        "subfolder": image_meta.get("subfolder", ""),
-        "type": image_meta.get("type", "output"),
-    }
-    r = requests.get(f"{comfy_url}/view", params=params, timeout=120)
+def _get(url, timeout=60):
+    r = requests.get(url, timeout=timeout)
     r.raise_for_status()
-    with open(save_path, "wb") as f:
-        f.write(r.content)
+    return r.json()
+
+def comfyui_prompt(comfy_url: str, prompt_graph: dict) -> str:
+    """
+    Submit a prompt graph to ComfyUI.
+    Returns prompt_id.
+    """
+    data = _post(f"{comfy_url}/prompt", json={"prompt": prompt_graph})
+    return data["prompt_id"]
+
+def comfyui_wait(comfy_url: str, prompt_id: str, poll_sec: float = 0.6, timeout_sec: int = 300):
+    """
+    Wait until prompt finishes. Returns history JSON.
+    """
+    t0 = time.time()
+    while True:
+        hist = _get(f"{comfy_url}/history/{prompt_id}")
+        if prompt_id in hist:
+            return hist[prompt_id]
+        if time.time() - t0 > timeout_sec:
+            raise TimeoutError("ComfyUI timed out waiting for history.")
+        time.sleep(poll_sec)
+
+def comfyui_pick_first_image(history: dict) -> str:
+    """
+    From history, find the first image filename in outputs.
+    Returns filename, e.g. '00001_.png'
+    """
+    outputs = history.get("outputs") or {}
+    for _, out in outputs.items():
+        images = out.get("images") or []
+        if images:
+            return images[0]["filename"]
+    raise RuntimeError("No image found in ComfyUI history outputs.")
+
+def comfyui_view_url(comfy_url: str, filename: str, subfolder: str = "", folder_type: str = "output") -> str:
+    # ComfyUI image endpoint
+    # /view?filename=...&subfolder=...&type=output
+    return f"{comfy_url}/view?filename={filename}&subfolder={subfolder}&type={folder_type}"
