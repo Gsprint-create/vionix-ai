@@ -1,9 +1,18 @@
+import Seo from "../../components/Seo";
 import Section from "../../components/Section";
 import GenixDemo from "../../components/GenixDemo";
+import WaitlistForm from "../../components/WaitlistForm";
 
 export default function Genix() {
   return (
     <>
+      <Seo
+        title="GeniX"
+        description="Text-to-image generation with cinematic style presets."
+        url="https://vionix-ai.com/tools/genix"
+        image="/og-genix.png"
+      />
+
       <Section
         eyebrow="Tool"
         title="GeniX"
@@ -26,9 +35,8 @@ export default function Genix() {
             </ul>
 
             <div className="pt-4">
-              <button className="btn-primary opacity-60 cursor-not-allowed">
-                Coming soon
-              </button>
+             <WaitlistForm tool="genix" />
+
             </div>
           </div>
 

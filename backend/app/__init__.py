@@ -17,6 +17,8 @@ def create_app():
     jwt.init_app(app)
     db.init_app(app)
 
+
+
     # import models so SQLAlchemy knows them
     from . import models  # noqa: F401
 
@@ -37,6 +39,8 @@ def create_app():
 
     from .routes.auth import auth_bp
     app.register_blueprint(auth_bp)
-
+    
+    from .routes.waitlist import waitlist_bp
+    app.register_blueprint(waitlist_bp)
     return app
 

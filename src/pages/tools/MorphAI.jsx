@@ -1,8 +1,18 @@
+import Seo from "../../components/Seo";
 import Section from "../../components/Section";
 
 export default function MorphAI() {
   return (
     <>
+      {/* ✅ SEO goes FIRST */}
+      <Seo
+        title="MorphAI FaceSwap"
+        description="FaceSwap with a gallery-first workflow. Live tool."
+        url="https://vionix-ai.com/tools/morphai-faceswap"
+        image="/og-morphai.png"
+      />
+
+      {/* ✅ Your existing content goes BELOW */}
       <Section
         eyebrow="Live Tool"
         title="MorphAI FaceSwap"

@@ -1,8 +1,18 @@
+import Seo from "../../components/Seo";
 import Section from "../../components/Section";
 
 export default function Influencer() {
   return (
     <>
+      {/* ✅ SEO FIRST */}
+      <Seo
+        title="AI Influencer Generator"
+        description="Persona packs + content pipelines for creators and brands. Coming soon."
+        url="https://vionix-ai.com/tools/influencer"
+        image="/og-influencer.png"
+      />
+
+      {/* ✅ EXISTING CONTENT BELOW */}
       <Section
         eyebrow="Coming soon"
         title="AI Influencer Generator"
@@ -23,9 +33,7 @@ export default function Influencer() {
             <li>Planned scheduling integrations</li>
           </ul>
 
-          <button className="btn-primary opacity-60 cursor-not-allowed">
-            Planned
-          </button>
+          <WaitlistForm tool="influencer" />
         </div>
       </Section>
     </>
