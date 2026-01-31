@@ -27,7 +27,7 @@ export default function Navbar() {
             href="https://www.morphai.net/tools"
             target="_blank"
             rel="noreferrer"
-            className="text-sm text-white/80 hover:text-white""
+            className="text-sm text-white/80 hover:text-white"
           >
             Tools
           </a>
