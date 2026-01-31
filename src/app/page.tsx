@@ -25,13 +25,14 @@ export default function HomePage() {
             Explore Tools
           </Link>
           <a
-            href="https://morphai.net"
-            target="_blank"
-            rel="noreferrer"
-            className="rounded-xl border border-white/10 bg-white/5 px-5 py-3 text-sm hover:bg-white/10 text-center"
-          >
-            Open MorphAI
-          </a>
+  href="https://www.morphai.net/tools"
+  target="_blank"
+  rel="noreferrer"
+  className="rounded-xl bg-blue-500/90 px-5 py-3 text-sm font-medium hover:bg-blue-500 text-center"
+>
+  Explore Tools
+</a>
+
         </div>
       </div>
 
