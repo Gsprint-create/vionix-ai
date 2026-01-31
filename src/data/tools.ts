@@ -4,9 +4,9 @@ export type ToolItem = {
   name: string;
   description: string;
   status: ToolStatus;
-  href?: string;
-  cta?: string;
-  primary?: boolean;
+  href?: string;      // only for live tools
+  cta?: string;       // optional label override
+  primary?: boolean;  // highlight one tool
 };
 
 export const tools: ToolItem[] = [
@@ -14,7 +14,7 @@ export const tools: ToolItem[] = [
     name: "MorphAI FaceSwap",
     description: "Face swap + gallery workflow.",
     status: "live",
-    href: "https://morphai.net", // change to your live URL
+    href: "https://YOUR_MORPHAI_URL",
     cta: "Launch",
     primary: true,
   },

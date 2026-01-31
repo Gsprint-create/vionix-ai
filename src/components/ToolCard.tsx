@@ -20,21 +20,21 @@ export default function ToolCard({ tool }: { tool: ToolItem }) {
       <p className="mt-2 text-sm text-white/70">{tool.description}</p>
 
       <div className="mt-6">
-        {isLive && tool.href ? (
-          <a
-            href={tool.href}
-            target="_blank"
-            rel="noreferrer"
-            className="inline-flex items-center gap-2 text-sm font-medium text-blue-300 hover:text-blue-200 no-underline"
-          >
-            {tool.cta ?? "Launch"} <span className="opacity-70">→</span>
-          </a>
-        ) : (
-          <span className="inline-flex items-center gap-2 text-sm text-white/50 cursor-not-allowed select-none">
-            {tool.cta ?? "Learn more"} <span className="opacity-50">→</span>
-          </span>
-        )}
-      </div>
+  {isLive ? (
+    <a
+      href={tool.href}
+      target="_blank"
+      rel="noreferrer"
+      className="inline-flex items-center gap-2 rounded-xl bg-blue-500/90 px-4 py-2 text-sm font-medium hover:bg-blue-500"
+    >
+      {tool.cta ?? "Launch"} <span className="opacity-80">→</span>
+    </a>
+  ) : (
+    <span className="inline-flex items-center gap-2 rounded-xl border border-white/10 bg-white/5 px-4 py-2 text-sm text-white/60 cursor-not-allowed select-none">
+      {tool.cta ?? "Learn more"} <span className="opacity-60">→</span>
+    </span>
+  )}
+</div>
     </div>
   );
 }
