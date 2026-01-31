@@ -22,21 +22,22 @@ export default function Navbar() {
         </nav>
 
         <div className="flex items-center gap-3">
-          <a
-            className="rounded-xl border border-white/10 bg-white/5 px-4 py-2 text-sm hover:bg-white/10"
-            href="https://www.morphai.net/tools"
-            target="_blank"
-            rel="noreferrer"
-            className="text-sm text-white/80 hover:text-white"
-          >
-            Tools
-          </a>
-          <a
-            className="rounded-xl bg-blue-500/90 px-4 py-2 text-sm font-medium hover:bg-blue-500"
-            href="/tools"
-          >
-            Get Started
-          </a>
+        <a
+  href="https://www.morphai.net/tools"
+  target="_blank"
+  rel="noreferrer"
+  className="rounded-xl border border-white/10 bg-white/5 px-4 py-2 text-sm text-white/80 hover:bg-white/10 hover:text-white"
+>
+  Open MorphAI
+</a>
+
+          <Link
+  href="/tools"
+  className="rounded-xl bg-blue-500/90 px-4 py-2 text-sm font-medium hover:bg-blue-500"
+>
+  Get Started
+</Link>
+
         </div>
       </div>
     </header>
