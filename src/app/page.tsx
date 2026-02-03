@@ -1,170 +1,217 @@
+"use client";
+
+import { useEffect, useState } from "react";
+
 export default function HomePage() {
+  const [openAbout, setOpenAbout] = useState(false);
+  const [agreed, setAgreed] = useState(false);
+
+  // Close on ESC
+  useEffect(() => {
+    function onKey(e: KeyboardEvent) {
+      if (e.key === "Escape") setOpenAbout(false);
+    }
+    if (openAbout) window.addEventListener("keydown", onKey);
+    return () => window.removeEventListener("keydown", onKey);
+  }, [openAbout]);
+
+  // Lock body scroll when modal is open
+  useEffect(() => {
+    if (!openAbout) return;
+    const prev = document.body.style.overflow;
+    document.body.style.overflow = "hidden";
+    return () => {
+      document.body.style.overflow = prev;
+    };
+  }, [openAbout]);
+
   return (
-    <main className="min-h-screen bg-[#070B14] text-white">
-      {/* Background glow */}
-      <div className="pointer-events-none fixed inset-0 opacity-60">
-        <div className="absolute -top-32 left-[-20%] h-[420px] w-[420px] rounded-full bg-blue-500/25 blur-3xl" />
-        <div className="absolute top-20 right-[-15%] h-[520px] w-[520px] rounded-full bg-emerald-500/15 blur-3xl" />
-        <div className="absolute bottom-[-25%] left-[20%] h-[520px] w-[520px] rounded-full bg-purple-500/15 blur-3xl" />
+    <main className="min-h-screen">
+      {/* ...your existing page... */}
+
+      {/* Buttons */}
+      <div className="mt-6 flex items-center justify-center gap-3">
+        <a
+          href="/tools/faceswap"
+          className="rounded-xl bg-blue-600 px-6 py-3 text-sm font-semibold text-white hover:bg-blue-500"
+        >
+          Enter MorphAI →
+        </a>
+
+        <button
+          type="button"
+          onClick={() => setOpenAbout(true)}
+          className="rounded-xl border border-white/10 bg-white/5 px-6 py-3 text-sm font-semibold text-white/90 hover:bg-white/10"
+        >
+          What is Vionix?
+        </button>
       </div>
 
-      {/* Content */}
-      <div className="relative mx-auto max-w-6xl px-6 pb-16 pt-10">
-        {/* Hero */}
-        <section className="rounded-3xl border border-white/10 bg-white/5 p-10 backdrop-blur">
-          <div className="inline-flex items-center gap-2 rounded-full border border-white/10 bg-white/5 px-3 py-1 text-xs text-white/70">
-            Platform • Creative AI Tools
-          </div>
+      {/* ✅ Modal */}
+      {openAbout && (
+        <div
+          className="fixed inset-0 z-[9999] flex items-center justify-center"
+          aria-modal="true"
+          role="dialog"
+        >
+          {/* Backdrop */}
+          <button
+            aria-label="Close dialog"
+            className="absolute inset-0 bg-black/70"
+            onClick={() => setOpenAbout(false)}
+          />
 
-          <h1 className="mt-4 text-4xl font-semibold tracking-tight md:text-5xl">
-            Vionix is the platform. Tools live in MorphAI.
-          </h1>
-
-          <p className="mt-4 max-w-2xl text-sm leading-relaxed text-white/70 md:text-base">
-            Vionix AI is the umbrella platform. MorphAI is our first live tool — face swap with a clean
-            gallery workflow and creator-friendly UX.
-          </p>
-
-          {/* BIG centered CTA */}
-          <div className="mt-8 flex flex-wrap items-center justify-center gap-3">
-            <a
-              href="https://www.morphai.net/tools"
-              target="_blank"
-              rel="noreferrer"
-              className="inline-flex items-center justify-center rounded-2xl bg-blue-500/90 px-10 py-4 text-base font-semibold shadow-lg shadow-blue-500/30 hover:bg-blue-500"
-            >
-              Enter MorphAI →
-            </a>
-
-            <a
-              href="#platform"
-              className="inline-flex items-center justify-center rounded-2xl border border-white/10 bg-white/5 px-8 py-4 text-base font-medium hover:bg-white/10"
-            >
-              What is Vionix?
-            </a>
-          </div>
-
-          <p className="mt-3 text-center text-sm text-white/60">
-            Tools are accessible inside MorphAI. This page is the hub.
-          </p>
-        </section>
-
-        {/* Platform cards */}
-        <section id="platform" className="mt-8 grid gap-4 md:grid-cols-3">
-          <div className="rounded-2xl border border-white/10 bg-white/5 p-5">
-            <div className="text-sm font-medium">Clear statuses</div>
-            <div className="mt-2 text-sm text-white/70">
-              Live / Coming soon / Planned so users always know what’s ready.
-            </div>
-          </div>
-          <div className="rounded-2xl border border-white/10 bg-white/5 p-5">
-            <div className="text-sm font-medium">Consistent UX</div>
-            <div className="mt-2 text-sm text-white/70">
-              Each tool follows the same design language and navigation.
-            </div>
-          </div>
-          <div className="rounded-2xl border border-white/10 bg-white/5 p-5">
-            <div className="text-sm font-medium">Built to scale</div>
-            <div className="mt-2 text-sm text-white/70">
-              Add auth, subscriptions, and dashboards whenever you’re ready.
-            </div>
-          </div>
-        </section>
-
-        {/* Tools preview (placeholders) */}
-        <section id="tools" className="mt-10">
-          <div className="mb-4">
-            <div className="text-2xl font-semibold">Tools</div>
-            <div className="mt-1 text-sm text-white/70">
-              Names shown here for the roadmap. Access happens inside MorphAI.
-            </div>
-          </div>
-
-          <div className="grid gap-4 md:grid-cols-3">
-            {/* MorphAI */}
-            <div className="rounded-2xl border border-white/10 bg-white/5 p-5">
-              <div className="flex items-center justify-between gap-3">
-                <div className="text-sm font-semibold">MorphAI FaceSwap</div>
-                <span className="rounded-full border border-emerald-400/20 bg-emerald-400/10 px-2 py-1 text-xs text-emerald-200">
-                  Live
-                </span>
+          {/* Panel */}
+          <div className="relative mx-4 w-full max-w-3xl overflow-hidden rounded-2xl border border-white/10 bg-[#0b0f1a] shadow-2xl">
+            {/* Header */}
+            <div className="flex items-center justify-between border-b border-white/10 px-6 py-4">
+              <div>
+                <h2 className="text-lg font-semibold text-white">What is Vionix AI?</h2>
+                <p className="text-sm text-white/60">
+                  Platform overview + Terms & Conditions
+                </p>
               </div>
-              <div className="mt-2 text-sm text-white/70">Face swap + gallery workflow.</div>
-              <div className="mt-4">
-                <a
-                  href="https://www.morphai.net/tools"
-                  target="_blank"
-                  rel="noreferrer"
-                  className="inline-flex items-center justify-center rounded-xl bg-blue-500/90 px-4 py-2 text-sm font-medium hover:bg-blue-500"
-                >
-                  Open in MorphAI →
-                </a>
+              <button
+                onClick={() => setOpenAbout(false)}
+                className="rounded-lg border border-white/10 bg-white/5 px-3 py-2 text-sm text-white/80 hover:bg-white/10"
+              >
+                Close
+              </button>
+            </div>
+
+            {/* Body (scrollable) */}
+            <div className="max-h-[70vh] overflow-y-auto px-6 py-5">
+              {/* About */}
+              <section className="space-y-3">
+                <h3 className="text-sm font-semibold text-white/90">The short version</h3>
+                <p className="text-sm text-white/70 leading-relaxed">
+                  <span className="text-white/90 font-medium">Vionix AI</span> is the umbrella platform.
+                  Inside it lives <span className="text-white/90 font-medium">MorphAI</span> — the tool hub.
+                  MorphAI hosts creative tools like FaceSwap, image generation, and more.
+                </p>
+
+                <div className="grid gap-3 md:grid-cols-3">
+                  <div className="rounded-xl border border-white/10 bg-white/5 p-4">
+                    <div className="text-xs font-semibold text-white/80">Vionix AI</div>
+                    <div className="mt-1 text-sm text-white/60">
+                      The platform, roadmap, accounts & future tools.
+                    </div>
+                  </div>
+                  <div className="rounded-xl border border-white/10 bg-white/5 p-4">
+                    <div className="text-xs font-semibold text-white/80">MorphAI</div>
+                    <div className="mt-1 text-sm text-white/60">
+                      The tool hub where you actually use features.
+                    </div>
+                  </div>
+                  <div className="rounded-xl border border-white/10 bg-white/5 p-4">
+                    <div className="text-xs font-semibold text-white/80">FaceSwap</div>
+                    <div className="mt-1 text-sm text-white/60">
+                      First live tool. Upload source + target and swap.
+                    </div>
+                  </div>
+                </div>
+              </section>
+
+              {/* Divider */}
+              <div className="my-6 h-px bg-white/10" />
+
+              {/* Terms */}
+              <section className="space-y-3">
+                <h3 className="text-sm font-semibold text-white/90">Terms & Conditions (summary)</h3>
+                <p className="text-xs text-white/50">
+                  This is a practical short version for the UI. For a full legal document, you can publish
+                  a dedicated /terms page later.
+                </p>
+
+                <div className="space-y-3 text-sm text-white/70 leading-relaxed">
+                  <div className="rounded-xl border border-white/10 bg-black/20 p-4">
+                    <div className="text-white/85 font-medium">1) Allowed use</div>
+                    <ul className="mt-2 list-disc pl-5 space-y-1">
+                      <li>Use the tools for lawful, personal or commercial creative work.</li>
+                      <li>Don’t use it to harass, defame, scam, or impersonate people for harm.</li>
+                      <li>Don’t upload illegal content.</li>
+                    </ul>
+                  </div>
+
+                  <div className="rounded-xl border border-white/10 bg-black/20 p-4">
+                    <div className="text-white/85 font-medium">2) You own your uploads</div>
+                    <ul className="mt-2 list-disc pl-5 space-y-1">
+                      <li>You keep ownership of images you upload.</li>
+                      <li>You confirm you have the rights/permission to use uploaded images.</li>
+                      <li>Generated outputs are provided “as-is”.</li>
+                    </ul>
+                  </div>
+
+                  <div className="rounded-xl border border-white/10 bg-black/20 p-4">
+                    <div className="text-white/85 font-medium">3) Privacy</div>
+                    <ul className="mt-2 list-disc pl-5 space-y-1">
+                      <li>We process uploads to produce your result.</li>
+                      <li>We may keep temporary files for performance/debugging, then remove them.</li>
+                      <li>We don’t sell your uploads.</li>
+                    </ul>
+                  </div>
+
+                  <div className="rounded-xl border border-white/10 bg-black/20 p-4">
+                    <div className="text-white/85 font-medium">4) Safety</div>
+                    <ul className="mt-2 list-disc pl-5 space-y-1">
+                      <li>Don’t upload images of minors.</li>
+                      <li>Don’t create content meant to deceive or exploit others.</li>
+                    </ul>
+                  </div>
+
+                  <div className="rounded-xl border border-white/10 bg-black/20 p-4">
+                    <div className="text-white/85 font-medium">5) Availability</div>
+                    <ul className="mt-2 list-disc pl-5 space-y-1">
+                      <li>Service may change, be updated, or temporarily unavailable.</li>
+                      <li>We’re not liable for indirect losses from downtime.</li>
+                    </ul>
+                  </div>
+                </div>
+              </section>
+
+              {/* Agreement */}
+              <div className="mt-6 rounded-xl border border-white/10 bg-white/5 p-4">
+                <label className="flex cursor-pointer items-start gap-3">
+                  <input
+                    type="checkbox"
+                    checked={agreed}
+                    onChange={(e) => setAgreed(e.target.checked)}
+                    className="mt-1 h-4 w-4"
+                  />
+                  <span className="text-sm text-white/70">
+                    I understand and agree to the Terms & Conditions summary above.
+                  </span>
+                </label>
+
+                <div className="mt-3 flex flex-wrap gap-3">
+                  <button
+                    onClick={() => setOpenAbout(false)}
+                    className="rounded-xl bg-blue-600 px-4 py-2 text-sm font-semibold text-white hover:bg-blue-500"
+                    disabled={!agreed}
+                    title={!agreed ? "Please accept the terms first" : ""}
+                    style={{ opacity: agreed ? 1 : 0.5 }}
+                  >
+                    Continue
+                  </button>
+
+                  <button
+                    onClick={() => setOpenAbout(false)}
+                    className="rounded-xl border border-white/10 bg-white/5 px-4 py-2 text-sm text-white/80 hover:bg-white/10"
+                  >
+                    Close
+                  </button>
+                </div>
               </div>
             </div>
 
-            {/* GeniX */}
-            <div className="rounded-2xl border border-white/10 bg-white/5 p-5">
-              <div className="flex items-center justify-between gap-3">
-                <div className="text-sm font-semibold">GeniX</div>
-                <span className="rounded-full border border-white/10 bg-white/5 px-2 py-1 text-xs text-white/70">
-                  Coming soon
-                </span>
-              </div>
-              <div className="mt-2 text-sm text-white/70">Text-to-image generator with style presets.</div>
-              <div className="mt-4">
-                <button
-                  disabled
-                  className="inline-flex cursor-not-allowed items-center justify-center rounded-xl border border-white/10 bg-white/5 px-4 py-2 text-sm text-white/50"
-                >
-                  View in MorphAI
-                </button>
-              </div>
-            </div>
-
-            {/* Influencer */}
-            <div className="rounded-2xl border border-white/10 bg-white/5 p-5">
-              <div className="flex items-center justify-between gap-3">
-                <div className="text-sm font-semibold">AI Influencer Generator</div>
-                <span className="rounded-full border border-white/10 bg-white/5 px-2 py-1 text-xs text-white/70">
-                  Coming soon
-                </span>
-              </div>
-              <div className="mt-2 text-sm text-white/70">Persona packs + content pipelines.</div>
-              <div className="mt-4">
-                <button
-                  disabled
-                  className="inline-flex cursor-not-allowed items-center justify-center rounded-xl border border-white/10 bg-white/5 px-4 py-2 text-sm text-white/50"
-                >
-                  View in MorphAI
-                </button>
-              </div>
+            {/* Footer */}
+            <div className="border-t border-white/10 px-6 py-4 text-xs text-white/40">
+              <a href="/terms" className="text-white/60 hover:text-white">Terms</a>
+              <a href="/privacy" className="text-white/60 hover:text-white">Privacy</a>
             </div>
           </div>
-        </section>
-
-        {/* Footer */}
-        <footer id="contact" className="mt-14 border-t border-white/10 pt-8 text-sm text-white/60">
-          <div className="flex flex-col gap-2 md:flex-row md:items-center md:justify-between">
-            <div>
-              <div className="font-medium text-white/80">Vionix AI</div>
-              <div>A modular creative AI lab for image transformation tools.</div>
-              <div className="mt-1 text-xs text-white/40">© {new Date().getFullYear()} Vionix AI</div>
-            </div>
-
-            <div className="flex gap-4 text-white/70">
-              <a className="hover:text-white" href="#platform">
-                Platform
-              </a>
-              <a className="hover:text-white" href="#tools">
-                Roadmap
-              </a>
-              <a className="hover:text-white" href="https://www.morphai.net/tools" target="_blank" rel="noreferrer">
-                MorphAI
-              </a>
-            </div>
-          </div>
-        </footer>
-      </div>
+        </div>
+      )}
     </main>
   );
 }
