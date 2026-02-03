@@ -1,6 +1,8 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useState } from "react";
+import VionixInfoModal from "@/components/VionixInfoModal";
+
 
 export default function HomePage() {
   const [openAbout, setOpenAbout] = useState(false);
@@ -39,12 +41,12 @@ export default function HomePage() {
         </a>
 
         <button
-          type="button"
-          onClick={() => setOpenAbout(true)}
-          className="rounded-xl border border-white/10 bg-white/5 px-6 py-3 text-sm font-semibold text-white/90 hover:bg-white/10"
+          onClick={() => setInfoOpen(true)}
+          className="rounded-xl border border-white/10 bg-white/5 px-4 py-2 text-sm text-white hover:bg-white/10 transition"
         >
           What is Vionix?
         </button>
+
       </div>
 
       {/* ✅ Modal */}
