@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useEffect, useMemo, useRef, useState } from "react";
+import React, { useEffect, useMemo, useState } from "react";
 
 type ToolPreview = {
   key: string;
@@ -13,10 +13,6 @@ type ToolPreview = {
 
 function cx(...parts: Array<string | false | null | undefined>) {
   return parts.filter(Boolean).join(" ");
-}
-
-function clamp(n: number, min: number, max: number) {
-  return Math.max(min, Math.min(max, n));
 }
 
 // Simple inline SVG “mock screenshot” placeholder (no external images needed)
@@ -85,16 +81,11 @@ export default function Page() {
     process.env.NEXT_PUBLIC_MORPHAI_URL?.replace(/\/+$/, "") || "https://morphai.net";
 
   const openMorphAiUrl = `${MORPHAI_URL}/tools`;
-  const enterMorphAiUrl = `${MORPHAI_URL}/tools/faceswap`;
+  const enterMorphAiUrl = `${MORPHAI_URL}/tools`; // Vionix "Enter MorphAI" goes to tool hub
 
   // Modal state
   const [openAbout, setOpenAbout] = useState(false);
   const [agreed, setAgreed] = useState(false);
-
-  // Carousel
-  const trackRef = useRef<HTMLDivElement | null>(null);
-  const [atStart, setAtStart] = useState(true);
-  const [atEnd, setAtEnd] = useState(false);
 
   const tools: ToolPreview[] = useMemo(
     () => [
@@ -103,7 +94,7 @@ export default function Page() {
         name: "MorphAI FaceSwap",
         tagline: "Swap a face into a target image in seconds.",
         status: "Live",
-        bullets: ["Source → Target workflow", "Multi-face mode ready", "Clean creator UX"],
+        bullets: ["Source → Target workflow", "Fast previews", "Simple creator UX"],
         mockLabel: "FaceSwap UI Preview",
       },
       {
@@ -113,22 +104,6 @@ export default function Page() {
         status: "Coming soon",
         bullets: ["Style presets", "Prompt helpers", "Use output as FaceSwap source"],
         mockLabel: "Image Generator Preview",
-      },
-      {
-        key: "influencer",
-        name: "AI Influencer Generator",
-        tagline: "Persona packs for content pipelines.",
-        status: "Coming soon",
-        bullets: ["Character presets", "Batch content ideas", "Brand-safe templates"],
-        mockLabel: "Influencer Preview",
-      },
-      {
-        key: "lipsync",
-        name: "LipSync Studio",
-        tagline: "Bring a portrait to life with audio.",
-        status: "Coming soon",
-        bullets: ["Audio-driven animation", "Simple export flow", "Creator-friendly UI"],
-        mockLabel: "LipSync Preview",
       },
     ],
     []
@@ -153,30 +128,6 @@ export default function Page() {
     };
   }, [openAbout]);
 
-  // Update carousel edge state
-  useEffect(() => {
-    const el = trackRef.current;
-    if (!el) return;
-
-    const onScroll = () => {
-      const max = el.scrollWidth - el.clientWidth;
-      setAtStart(el.scrollLeft <= 2);
-      setAtEnd(el.scrollLeft >= max - 2);
-    };
-
-    onScroll();
-    el.addEventListener("scroll", onScroll, { passive: true });
-    return () => el.removeEventListener("scroll", onScroll);
-  }, []);
-
-  function scrollByCards(dir: -1 | 1) {
-    const el = trackRef.current;
-    if (!el) return;
-    const card = el.querySelector<HTMLElement>("[data-card='tool']");
-    const step = card ? card.offsetWidth + 16 : Math.floor(el.clientWidth * 0.9);
-    el.scrollBy({ left: dir * step, behavior: "smooth" });
-  }
-
   return (
     <main className="min-h-screen bg-[#070a12] text-white">
       {/* Background glow */}
@@ -185,260 +136,141 @@ export default function Page() {
         <div className="absolute inset-0 bg-gradient-to-b from-black/30 via-black/10 to-black/60" />
       </div>
 
-      {/* Top nav */}
-      <header className="sticky top-0 z-30 border-b border-white/5 bg-black/30 backdrop-blur">
-        <div className="mx-auto flex max-w-6xl items-center justify-between px-6 py-4">
-          <div className="flex items-center gap-3">
-            <div className="grid h-9 w-9 place-items-center rounded-xl border border-white/10 bg-white/5">
-              <span className="text-sm font-bold">V</span>
-            </div>
-            <div className="leading-tight">
-              <div className="text-sm font-semibold">Vionix AI</div>
-              <div className="text-xs text-white/60">Create. Morph. Transform.</div>
-            </div>
-          </div>
-
-          <nav className="hidden items-center gap-6 text-sm text-white/70 md:flex">
-            <a className="hover:text-white" href="#tools">
-              Tools
-            </a>
-            <a className="hover:text-white" href="#pricing">
-              Pricing
-            </a>
-            <a className="hover:text-white" href="#about">
-              About
-            </a>
-            <a className="hover:text-white" href="#contact">
-              Contact
-            </a>
-          </nav>
-
-          <div className="flex items-center gap-3">
-            <a
-              href={openMorphAiUrl}
-              className="rounded-xl border border-white/10 bg-white/5 px-4 py-2 text-sm text-white/85 hover:bg-white/10"
-            >
-              Open MorphAI
-            </a>
-            <a
-              href={enterMorphAiUrl}
-              className="rounded-xl bg-blue-600 px-4 py-2 text-sm font-semibold text-white hover:bg-blue-500"
-            >
-              Get Started
-            </a>
-          </div>
-        </div>
-      </header>
+      
 
       {/* Hero */}
-      <section className="mx-auto max-w-6xl px-6 pt-14 pb-10">
-        <div className="rounded-3xl border border-white/10 bg-white/[0.04] p-8 shadow-2xl">
-          <div className="text-xs text-white/60">Platform • Creative AI Tools</div>
+<section className="mx-auto max-w-4xl px-6 pt-20 pb-12 text-center">
+  <div className="rounded-3xl border border-white/10 bg-white/[0.04] p-10 shadow-2xl">
 
-          <h1 className="mt-3 text-3xl font-semibold tracking-tight md:text-5xl">
-            Vionix is the platform.
-            <br />
-            Tools live in MorphAI.
-          </h1>
+    <div className="text-xs text-white/60 tracking-widest uppercase">
+      Platform • Creative AI Tools
+    </div>
 
-          <p className="mt-4 max-w-2xl text-sm leading-relaxed text-white/70 md:text-base">
-            Vionix AI is the umbrella platform. MorphAI is the tool hub — starting with FaceSwap,
-            then expanding into image generation, creator pipelines, and more.
-          </p>
+    <h1 className="mt-4 text-3xl font-semibold tracking-tight md:text-5xl">
+      Vionix is the platform.
+      <br />
+      Tools live in MorphAI.
+    </h1>
 
-          {/* Primary buttons */}
-          <div className="mt-7 flex flex-wrap items-center gap-3">
-            <a
-              href={enterMorphAiUrl}
-              className="rounded-xl bg-blue-600 px-6 py-3 text-sm font-semibold text-white hover:bg-blue-500"
-            >
-              Enter MorphAI →
-            </a>
+    <p className="mt-6 text-sm md:text-base text-white/70 leading-relaxed max-w-2xl mx-auto">
+      Vionix AI is the umbrella platform. MorphAI is the tool hub — starting
+      with FaceSwap, then expanding into image generation, creator pipelines,
+      and more.
+    </p>
 
-            <button
-              onClick={() => {
-                setAgreed(false);
-                setOpenAbout(true);
-              }}
-              className="rounded-xl border border-white/10 bg-white/5 px-5 py-3 text-sm text-white hover:bg-white/10 transition"
-            >
-              What is Vionix?
-            </button>
-          </div>
+    {/* Buttons */}
+    <div className="mt-8 flex justify-center gap-4 flex-wrap">
+      <a
+        href={enterMorphAiUrl}
+        className="rounded-xl bg-blue-600 px-6 py-3 text-sm font-semibold text-white hover:bg-blue-500"
+      >
+        Enter MorphAI →
+      </a>
 
-          <div className="mt-7 grid gap-3 md:grid-cols-3">
-            <div className="rounded-2xl border border-white/10 bg-black/20 p-4">
-              <div className="text-xs font-semibold text-white/80">Clear status</div>
-              <div className="mt-1 text-sm text-white/60">
-                Live / Coming soon / Planned — users always know what’s ready.
-              </div>
-            </div>
-            <div className="rounded-2xl border border-white/10 bg-black/20 p-4">
-              <div className="text-xs font-semibold text-white/80">Consistent UX</div>
-              <div className="mt-1 text-sm text-white/60">
-                Every tool follows the same design language and navigation.
-              </div>
-            </div>
-            <div className="rounded-2xl border border-white/10 bg-black/20 p-4">
-              <div className="text-xs font-semibold text-white/80">Built to scale</div>
-              <div className="mt-1 text-sm text-white/60">
-                Add auth, subscriptions, dashboards when you’re ready.
-              </div>
-            </div>
-          </div>
-        </div>
-      </section>
+      <button
+        onClick={() => {
+          setAgreed(false);
+          setOpenAbout(true);
+        }}
+        className="rounded-xl border border-white/10 bg-white/5 px-6 py-3 text-sm text-white hover:bg-white/10 transition"
+      >
+        What is Vionix?
+      </button>
+    </div>
+  </div>
+</section>
 
-      {/* Wide carousel previews */}
-      <section id="tools" className="mx-auto max-w-6xl px-6 pb-14">
-        <div className="mb-4 flex items-end justify-between">
-          <div>
-            <h2 className="text-xl font-semibold">Tool previews</h2>
-            <p className="mt-1 text-sm text-white/60">
-              Visual placeholders showing what users will see inside MorphAI.
-            </p>
-          </div>
 
-          <div className="hidden gap-2 md:flex">
-            <button
-              onClick={() => scrollByCards(-1)}
-              disabled={atStart}
-              className={cx(
-                "rounded-xl border border-white/10 px-4 py-2 text-sm",
-                atStart ? "bg-white/5 text-white/30" : "bg-white/5 hover:bg-white/10"
-              )}
-            >
-              ←
-            </button>
-            <button
-              onClick={() => scrollByCards(1)}
-              disabled={atEnd}
-              className={cx(
-                "rounded-xl border border-white/10 px-4 py-2 text-sm",
-                atEnd ? "bg-white/5 text-white/30" : "bg-white/5 hover:bg-white/10"
-              )}
-            >
-              →
-            </button>
-          </div>
-        </div>
+      {/* Stacked previews (FaceSwap + GeniX only) */}
+      <section id="tools" className="mx-auto max-w-5xl px-6 pb-20">
+  <div className="mb-10 text-center">
+    <h2 className="text-3xl font-semibold tracking-tight">
+      Tool Previews
+    </h2>
+    <p className="mt-3 text-sm text-white/60 max-w-xl mx-auto">
+      Visual placeholders showing what users will see inside MorphAI.
+    </p>
+  </div>
 
-        <div className="relative">
-          {/* edge fades */}
-          <div className="pointer-events-none absolute left-0 top-0 z-10 h-full w-10 bg-gradient-to-r from-[#070a12] to-transparent" />
-          <div className="pointer-events-none absolute right-0 top-0 z-10 h-full w-10 bg-gradient-to-l from-[#070a12] to-transparent" />
 
-          <div
-            ref={trackRef}
-            className="flex gap-4 overflow-x-auto pb-2 [scrollbar-width:none] [-ms-overflow-style:none] [&::-webkit-scrollbar]:hidden scroll-smooth"
-            style={{ scrollSnapType: "x mandatory" }}
-          >
-            {tools.map((t) => {
-              const img = mockSvgDataUri(t.mockLabel, t.tagline);
-              return (
-                <article
-                  key={t.key}
-                  data-card="tool"
-                  className="min-w-[88%] md:min-w-[66%] lg:min-w-[56%] scroll-ml-6 scroll-snap-align-start"
-                  style={{ scrollSnapAlign: "start" }}
-                >
-                  <div className="overflow-hidden rounded-3xl border border-white/10 bg-white/[0.04] shadow-2xl">
-                    <div className="relative">
-                      <img
-                        src={img}
-                        alt={`${t.name} preview`}
-                        className="h-[260px] w-full object-cover md:h-[320px]"
-                      />
+        <div className="flex flex-col gap-10 items-center">
+          {tools.map((t) => {
+            const img = mockSvgDataUri(t.mockLabel, t.tagline);
 
-                      <div className="absolute left-4 top-4 flex items-center gap-2">
-                        <span
-                          className={cx(
-                            "rounded-full border px-2 py-1 text-xs",
-                            t.status === "Live"
-                              ? "border-emerald-400/20 bg-emerald-400/10 text-emerald-200"
-                              : "border-white/10 bg-white/5 text-white/70"
-                          )}
-                        >
-                          {t.status}
-                        </span>
-                        <span className="rounded-full border border-white/10 bg-black/30 px-2 py-1 text-xs text-white/70">
-                          Preview placeholder
-                        </span>
-                      </div>
-                    </div>
+            return (
+              <article key={t.key} className="w-full">
+                <div className="overflow-hidden rounded-3xl border border-white/10 bg-white/[0.04] shadow-2xl">
+                  <div className="relative">
+                    <img
+                      src={img}
+                      alt={`${t.name} preview`}
+                      className="h-[260px] w-full object-cover md:h-[340px]"					  
+                    />
 
-                    <div className="p-6">
-                      <div className="flex flex-col gap-2 md:flex-row md:items-center md:justify-between">
-                        <div>
-                          <h3 className="text-lg font-semibold">{t.name}</h3>
-                          <p className="mt-1 text-sm text-white/65">{t.tagline}</p>
-                        </div>
-
-                        <div className="mt-2 flex gap-2 md:mt-0">
-                          <a
-                            href={openMorphAiUrl}
-                            className="rounded-xl border border-white/10 bg-white/5 px-4 py-2 text-sm text-white/80 hover:bg-white/10"
-                          >
-                            View MorphAI
-                          </a>
-                          <button
-                            onClick={() => setOpenAbout(true)}
-                            className="rounded-xl border border-white/10 bg-white/5 px-4 py-2 text-sm text-white/80 hover:bg-white/10"
-                          >
-                            Terms
-                          </button>
-                        </div>
-                      </div>
-
-                      <ul className="mt-4 grid gap-2 md:grid-cols-3">
-                        {t.bullets.map((b, i) => (
-                          <li
-                            key={i}
-                            className="rounded-2xl border border-white/10 bg-black/20 px-4 py-3 text-sm text-white/70"
-                          >
-                            {b}
-                          </li>
-                        ))}
-                      </ul>
+                    <div className="absolute left-4 top-4 flex items-center gap-2">
+                      <span
+                        className={cx(
+                          "rounded-full border px-2 py-1 text-xs",
+                          t.status === "Live"
+                            ? "border-emerald-400/20 bg-emerald-400/10 text-emerald-200"
+                            : "border-white/10 bg-white/5 text-white/70"
+                        )}
+                      >
+                        {t.status}
+                      </span>
+                      <span className="rounded-full border border-white/10 bg-black/30 px-2 py-1 text-xs text-white/70">
+                        Preview placeholder
+                      </span>
                     </div>
                   </div>
-                </article>
-              );
-            })}
-          </div>
 
-          {/* mobile buttons */}
-          <div className="mt-4 flex gap-2 md:hidden">
-            <button
-              onClick={() => scrollByCards(-1)}
-              disabled={atStart}
-              className={cx(
-                "w-1/2 rounded-xl border border-white/10 px-4 py-2 text-sm",
-                atStart ? "bg-white/5 text-white/30" : "bg-white/5 hover:bg-white/10"
-              )}
-            >
-              ← Prev
-            </button>
-            <button
-              onClick={() => scrollByCards(1)}
-              disabled={atEnd}
-              className={cx(
-                "w-1/2 rounded-xl border border-white/10 px-4 py-2 text-sm",
-                atEnd ? "bg-white/5 text-white/30" : "bg-white/5 hover:bg-white/10"
-              )}
-            >
-              Next →
-            </button>
-          </div>
+                  <div className="p-6">
+                    <div className="flex flex-col gap-2 md:flex-row md:items-center md:justify-between">
+                      <div>
+                        <h3 className="text-lg font-semibold">{t.name}</h3>
+                        <p className="mt-1 text-sm text-white/65">{t.tagline}</p>
+                      </div>
+
+                      <div className="mt-2 flex gap-2 md:mt-0">
+                        <a
+                          href={openMorphAiUrl}
+                          className="rounded-xl border border-white/10 bg-white/5 px-4 py-2 text-sm text-white/80 hover:bg-white/10"
+                        >
+                          View MorphAI
+                        </a>
+                        <button
+                          onClick={() => setOpenAbout(true)}
+                          className="rounded-xl border border-white/10 bg-white/5 px-4 py-2 text-sm text-white/80 hover:bg-white/10"
+                        >
+                          Terms
+                        </button>
+                      </div>
+                    </div>
+
+                    <ul className="mt-4 grid gap-2 md:grid-cols-3">
+                      {t.bullets.map((b, i) => (
+                        <li
+                          key={i}
+                          className="rounded-2xl border border-white/10 bg-black/20 px-4 py-3 text-sm text-white/70"
+                        >
+                          {b}
+                        </li>
+                      ))}
+                    </ul>
+                  </div>
+                </div>
+              </article>
+            );
+          })}
         </div>
       </section>
 
-      {/* Placeholder Pricing/About/Contact anchors (so nav feels real) */}
+      {/* Placeholder sections so nav works */}
       <section id="pricing" className="mx-auto max-w-6xl px-6 pb-10">
         <div className="rounded-3xl border border-white/10 bg-white/[0.04] p-8">
           <h2 className="text-xl font-semibold">Pricing</h2>
           <p className="mt-2 text-sm text-white/65">
-            Pricing can stay “coming soon” while you polish the tools. This section is a placeholder.
+            Placeholder section for now — keep it “coming soon” until you’re ready.
           </p>
           <div className="mt-5 grid gap-3 md:grid-cols-3">
             {["Starter", "Pro", "Enterprise"].map((p) => (
@@ -455,8 +287,8 @@ export default function Page() {
         <div className="rounded-3xl border border-white/10 bg-white/[0.04] p-8">
           <h2 className="text-xl font-semibold">About</h2>
           <p className="mt-2 text-sm text-white/65">
-            Vionix is the platform brand. MorphAI is the tool hub. This page shows what users will get
-            once inside — without exposing unfinished tools.
+            Vionix is the platform brand. MorphAI is the tool hub. This page shows what users will
+            get once inside — without exposing unfinished tools.
           </p>
         </div>
       </section>
@@ -465,7 +297,7 @@ export default function Page() {
         <div className="rounded-3xl border border-white/10 bg-white/[0.04] p-8">
           <h2 className="text-xl font-semibold">Contact</h2>
           <p className="mt-2 text-sm text-white/65">
-            Add your email / form later. For now this is a placeholder section.
+            Add your email / form later. For now this is a placeholder.
           </p>
         </div>
       </section>
@@ -487,7 +319,11 @@ export default function Page() {
 
       {/* Modal */}
       {openAbout && (
-        <div className="fixed inset-0 z-[9999] flex items-center justify-center" role="dialog" aria-modal="true">
+        <div
+          className="fixed inset-0 z-[9999] flex items-center justify-center"
+          role="dialog"
+          aria-modal="true"
+        >
           {/* Backdrop */}
           <button
             aria-label="Close dialog"
@@ -525,15 +361,21 @@ export default function Page() {
                 <div className="grid gap-3 md:grid-cols-3">
                   <div className="rounded-2xl border border-white/10 bg-white/5 p-4">
                     <div className="text-xs font-semibold text-white/80">Vionix AI</div>
-                    <div className="mt-1 text-sm text-white/60">The platform, roadmap, accounts & future tools.</div>
+                    <div className="mt-1 text-sm text-white/60">
+                      The platform, roadmap, accounts & future tools.
+                    </div>
                   </div>
                   <div className="rounded-2xl border border-white/10 bg-white/5 p-4">
                     <div className="text-xs font-semibold text-white/80">MorphAI</div>
-                    <div className="mt-1 text-sm text-white/60">The tool hub where you actually use features.</div>
+                    <div className="mt-1 text-sm text-white/60">
+                      The tool hub where you actually use features.
+                    </div>
                   </div>
                   <div className="rounded-2xl border border-white/10 bg-white/5 p-4">
                     <div className="text-xs font-semibold text-white/80">FaceSwap</div>
-                    <div className="mt-1 text-sm text-white/60">First live tool. Upload source + target and swap.</div>
+                    <div className="mt-1 text-sm text-white/60">
+                      First live tool. Upload source + target and swap.
+                    </div>
                   </div>
                 </div>
               </section>
@@ -633,11 +475,9 @@ export default function Page() {
             {/* Footer */}
             <div className="flex items-center justify-between border-t border-white/10 px-6 py-4 text-xs text-white/40">
               <span>Tip: publish full Terms/Privacy pages later.</span>
-              <div className="flex gap-3">
-                <button onClick={() => setOpenAbout(false)} className="text-white/60 hover:text-white">
-                  OK
-                </button>
-              </div>
+              <button onClick={() => setOpenAbout(false)} className="text-white/60 hover:text-white">
+                OK
+              </button>
             </div>
           </div>
         </div>
